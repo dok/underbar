@@ -195,11 +195,7 @@ var _ = { };
       if (prevItem === undefined) {
         return iterator(item);
       }
-      if (!!prevItem !== !!iterator(item)) {
-        return false;
-      } else {
-        return true;
-      }
+      return !!prevItem === !!iterator(item);
     }, undefined);
   };
 
@@ -207,8 +203,11 @@ var _ = { };
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    if (collection.length === 0) {
+      return false;
+    }
+    return _.every(collection, iterator);
   };
-
 
   /**
    * OBJECTS
@@ -229,6 +228,11 @@ var _ = { };
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    _.each(arguments.slice(1), function(items) {
+      _.each(items, function(item, key) {
+        obj[key] = item;
+      });
+    });
   };
 
   // Like extend, but doesn't ever overwrite a key that already
