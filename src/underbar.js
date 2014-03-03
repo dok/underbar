@@ -112,6 +112,10 @@ var _ = { };
     // map() is a useful primitive iteration function that works a lot
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
+    _.each(array, function(value, key, collection){
+      array[key] = iterator(value);
+    });
+    return array;
   };
 
   /*
@@ -135,6 +139,14 @@ var _ = { };
   // Calls the method named by methodName on each value in the list.
   // Note: you will nead to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+    _.each(collection, function(value, key, list) {
+      if(typeof functionOrKey === 'function') {
+        list[key] = functionOrKey.apply(value);
+      } else {
+        list[key] = value[functionOrKey].apply(value, args);
+      }
+    });
+    return collection;
   };
 
   // Reduces an array or object to a single value by repetitively calling
@@ -151,6 +163,10 @@ var _ = { };
   //     return total + number;
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
+    _.each(collection, function(value, key) {
+      accumulator = iterator(accumulator, value);
+    });
+    return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -168,7 +184,23 @@ var _ = { };
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
+    if(collection.length === 0) {
+      return true;
+    }
+    if(iterator === undefined) {
+      iterator = _.identity;
+    }
     // TIP: Try re-using reduce() here.
+    return !!_.reduce(collection, function(prevItem, item) {
+      if (prevItem === undefined) {
+        return iterator(item);
+      }
+      if (!!prevItem !== !!iterator(item)) {
+        return false;
+      } else {
+        return true;
+      }
+    }, undefined);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
