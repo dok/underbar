@@ -91,15 +91,11 @@ var _ = { };
   _.uniq = function(array) {
     //Go through all of the items
     //Use a key value storage to check if duplicates exist
-    var storage = new Object();
-    var result = [];
-    _.each(array, function(value, key, collection) {
-      if(!storage.hasOwnProperty(value)) {
-        result.push(value);
+    var storage = {};
+    _.each(array, function(value) {
         storage[value] = value;
-      }
     });
-    return result;
+    return Object.keys(storage);
   };
 
 
