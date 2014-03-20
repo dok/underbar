@@ -292,7 +292,13 @@ var _ = { };
   // instead if possible.
   _.memoize = function(func) {
     var mem = {};
-    return func;
+    return function() {
+      var hash = _.identity.apply(this, arguments);
+      if(mem[hash] === undefined) {
+        mem[hash] = func.apply(this, arguments);
+      } 
+      return mem[hash];
+    }
   };
 
   // Delays a function for the given number of milliseconds, and then calls
