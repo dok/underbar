@@ -194,20 +194,17 @@ var _ = { };
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
-    // TIP: There's a very clever way to re-use every() here.
-    var hasSome = false;
     if(iterator === undefined) {
       iterator = _.identity;
     }
     if (collection.length === 0) {
       return false;
     }
-    _.every(collection, function(arg) {
-      if(iterator(arg)) {
-        hasSome = true;
+    return !_.every(collection, function(item) {
+      if(!iterator(item)) {
+        return true;
       }
     });
-    return hasSome;
   };
 
   /**
@@ -292,13 +289,15 @@ var _ = { };
   // instead if possible.
   _.memoize = function(func) {
     var mem = {};
+    // console.log(mem[hash]);
     return function() {
-      var hash = arguments;
-      if(mem[hash] === undefined) {
-        mem[hash] = func.apply(this, arguments);
-      } 
-      return mem[hash];
-    }
+      console.log(arguments);
+      var arg = arguments[0];
+      if(!mem[arg]) {
+        mem[arg] = func.apply(this, arguments);
+      }
+      return mem[arg];
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
