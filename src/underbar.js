@@ -184,11 +184,11 @@ var _ = { };
     }
     // TIP: Try re-using reduce() here.
     return !!_.reduce(collection, function(prevItem, item) {
-      if (prevItem === undefined) {
+      if (prevItem ) {
         return iterator(item);
       }
-      return !!prevItem === !!iterator(item);
-    }, undefined);
+      return prevItem;
+    }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
@@ -293,7 +293,7 @@ var _ = { };
   _.memoize = function(func) {
     var mem = {};
     return function() {
-      var hash = _.identity.apply(this, arguments);
+      var hash = arguments;
       if(mem[hash] === undefined) {
         mem[hash] = func.apply(this, arguments);
       } 
