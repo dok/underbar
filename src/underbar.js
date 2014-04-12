@@ -36,7 +36,7 @@ var _ = { };
   // Call iterator(value, key, collection) for each element of collection.
   // Accepts both arrays and objects.
   //
-  // Note: _.each does not have a return value, but rather simply runs the
+  // Note: _.''each'' does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
     if(Array.isArray(collection)) {
@@ -289,9 +289,7 @@ var _ = { };
   // instead if possible.
   _.memoize = function(func) {
     var mem = {};
-    // console.log(mem[hash]);
     return function() {
-      console.log(arguments);
       var arg = arguments[0];
       if(!mem[arg]) {
         mem[arg] = func.apply(this, arguments);
@@ -347,6 +345,21 @@ var _ = { };
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+    if (iterator === 'length') {
+      return collection.sort(function(a,b) {
+        return a - b;
+      });
+    } else {
+      return collection.sort(function(a,b) {
+        if(a === undefined) {
+          return 1;
+        } else if (b === undefined) {
+          return -1;
+        } else {
+          return iterator(a,b);
+        }
+      });
+    }
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -362,6 +375,19 @@ var _ = { };
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+    // If it's a number, push it to result
+    // Else, flatten it again
+    if(!result) {
+      result = [];
+    }
+    _.each(nestedArray, function(val) {
+      if(!Array.isArray(val)) { // If number
+        result.push(val);
+      } else {
+        _.flatten(val, result);
+      }
+    });
+    return result;
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
